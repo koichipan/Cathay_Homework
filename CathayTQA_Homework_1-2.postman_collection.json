@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "50874492-ae37-44b9-ac6a-90e2aea873f6",
+		"name": "CathayTQA_Homework_1-2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Films",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d111121e-01c4-4fb7-a6f5-6c5b39e766e6",
+						"exec": [
+							"eval(environment.getResponseJson);",
+							"",
+							"//http code 200",
+							"pm.test(\"Verify response code 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"//API 1 People's starships shouild in API 2 Films's starships",
+							"API_2_starships = jsonData.starships",
+							"API_1_starships = pm.environment.get(\"api1_starships\")",
+							"pm.test(\"API 1 People's starships shouild in API 2 Films's starships\", function () {",
+							"    pm.expect(API_2_starships).to.include(API_1_starships);",
+							"});",
+							"",
+							"",
+							"//API 2 Films's starships number should bigger than API 1 People's starships number",
+							"API_2_starships_num = jsonData.starships.length",
+							"API_1_starships_num = pm.environment.get(\"api1_starships\").length",
+							"",
+							"pm.test(\"Check API 2 starships number bigger than API 1\", function () {",
+							"    pm.expect(API_2_starships_num).to.be.above(API_1_starships_num)",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d258a708-50a1-427e-b5ea-9773f3848e62",
+						"exec": [
+							"pm.sendRequest({",
+							"      url:  \"https://swapi.co/api/people/\" +  pm.variables.get(\"var_people_id\"), ",
+							"      method: 'GET'",
+							"  }, function (err, response) {",
+							"    var jsonData = response.json();",
+							"    pm.environment.set(\"api1_starships\", jsonData.starships);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapi.co/api/films/{{var_flims_id}}",
+					"protocol": "https",
+					"host": [
+						"swapi",
+						"co"
+					],
+					"path": [
+						"api",
+						"films",
+						"{{var_flims_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
